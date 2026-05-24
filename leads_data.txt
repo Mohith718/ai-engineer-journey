@@ -1,0 +1,6 @@
+Arjun,Redsage,arjun@redsage.in,85
+Sneha,Fractal,sneha@fractal.ai,45
+Vikram,Deccan AI,vikram@deccanai.com,92
+Pooja,TCS,pooja@tcs.com,60
+Ravi,Infosys,ravi@infosys.com,78
+Meera,Zoho,meera@zoho.com,33
