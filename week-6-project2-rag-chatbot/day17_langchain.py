@@ -9,19 +9,10 @@ from langchain_chroma import Chroma
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 
-
 load_dotenv()
 
-loader = PyPDFLoader("LLM Interview Questions.pdf")
-documents = loader.load()
-print(f"Pages loaded: {len(documents)}")
-print(f"First page preview: {documents[0].page_content[:200]}")
-print(f"Metadata: {documents[0].metadata}")
 
-splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-chunks = splitter.split_documents(documents)
-print(f"\nTotal chunks: {len(chunks)}")
-print(f"First chunk: {chunks[0].page_content[:200]}")
+# ── Model ─────────────────────────────────────────────────────────────────────
 
 llm = ChatGroq(
     api_key=os.getenv("GROQ_API_KEY"),
@@ -29,20 +20,51 @@ llm = ChatGroq(
 )
 
 response = llm.invoke("What is RAG in AI? Answer in 2 sentences.")
-print(response.content)
+# print(response.content)
+
+
+# ── Prompt Template ───────────────────────────────────────────────────────────
 
 prompt = ChatPromptTemplate.from_messages([
     ("system", "You are an AI engineering tutor. Be concise."),
     ("user", "Explain {topic} in {num_sentences} sentences.")
 ])
 
+rag_prompt = ChatPromptTemplate.from_messages([
+    ("system", "Answer questions based only on the provided context. If the answer is not in the context, say you don't have enough information."),
+    ("user", "Context:\n{context}\n\nQuestion: {question}")
+])
+
+
+# ── Chain ─────────────────────────────────────────────────────────────────────
+
 chain = prompt | llm
 
 response = chain.invoke({"topic": "embeddings", "num_sentences": "3"})
-print(response.content)
+# print(response.content)
 
 response = chain.invoke({"topic": "vector databases", "num_sentences": "2"})
-print(response.content)
+# print(response.content)
+
+
+# ── Document Loader ───────────────────────────────────────────────────────────
+
+loader = PyPDFLoader("LLM Interview Questions.pdf")
+documents = loader.load()
+print(f"Pages loaded: {len(documents)}")
+print(f"First page preview: {documents[0].page_content[:200]}")
+print(f"Metadata: {documents[0].metadata}")
+
+
+# ── Text Splitter ─────────────────────────────────────────────────────────────
+
+splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+chunks = splitter.split_documents(documents)
+print(f"\nTotal chunks: {len(chunks)}")
+print(f"First chunk: {chunks[0].page_content[:200]}")
+
+
+# ── Retriever ─────────────────────────────────────────────────────────────────
 
 embeddings = GoogleGenerativeAIEmbeddings(
     google_api_key=os.getenv("GEMINI_API_KEY"),
@@ -50,15 +72,11 @@ embeddings = GoogleGenerativeAIEmbeddings(
 )
 vectorstore = Chroma.from_documents(chunks, embeddings)
 retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+
 results = retriever.invoke("What is tokenization?")
 for doc in results:
     print(f"Page {doc.metadata['page']}: {doc.page_content[:100]}...")
     print()
-
-rag_prompt = ChatPromptTemplate.from_messages([
-    ("system", "Answer questions based only on the provided context. If the answer is not in the context, say you don't have enough information."),
-    ("user", "Context:\n{context}\n\nQuestion: {question}")
-])
 
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
