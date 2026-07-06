@@ -11,15 +11,18 @@ The problem: I couldn't explain what was happening under the hood, and I couldn'
 ## What I've built so far
 
 ### Project 2: PDF RAG Chatbot
-`Python` `ChromaDB` `Gemini Embeddings` `Groq LLaMA` `Streamlit` `LangChain` `FastAPI`
+`Python` `ChromaDB` `Gemini Embeddings` `Groq LLaMA` `Streamlit` `LangChain` `FastAPI` `Docker`
+
+**Live demo:** [ai-engineer-journey-production-4faf.up.railway.app/docs](https://ai-engineer-journey-production-4faf.up.railway.app/docs), upload a PDF, ask it questions, see it work. No setup needed.
 
 Upload a PDF. Ask questions about it. Get answers pulled from the actual document, not the model's imagination.
 
-I built this four separate times on purpose:
+I built this five separate times on purpose:
 - From scratch in raw Python (manual chunking, embedding, vector search)
 - Rebuilt with LangChain (same thing, way less code, now I know what it hides)
 - Wrapped in Streamlit (browser UI instead of terminal)
 - Wrapped in FastAPI (`/upload` and `/ask` endpoints, any app can call it)
+- Containerized with Docker and deployed live on Railway
 
 ### Project 3: AI Research Agent
 `LangGraph` `Tavily Search` `Groq LLaMA`
