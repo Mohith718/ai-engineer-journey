@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ticket Triage — AI Support Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f12;
+    --bg-panel: #15181d;
+    --bg-card: #1a1e24;
+    --border: #262b33;
+    --border-soft: #1f232a;
+    --text-primary: #eef0f2;
+    --text-secondary: #8b9099;
+    --text-faint: #565c66;
+    --accent: #d9c9a8;
+    --resolved: #6fbf8b;
+    --resolved-bg: rgba(111, 191, 139, 0.08);
+    --escalated: #e0925a;
+    --escalated-bg: rgba(224, 146, 90, 0.08);
+    --urgency-low: #6fbf8b;
+    --urgency-medium: #d9b35a;
+    --urgency-high: #e0925a;
+    --urgency-critical: #d9635a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(217,201,168,0.06), transparent);
+    color: var(--text-primary);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+    padding: 64px 24px 100px;
+  }
+
+  .wrap { max-width: 760px; margin: 0 auto; }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 14px;
+  }
+
+  .eyebrow::before {
+    content: "●";
+    color: var(--resolved);
+    margin-right: 8px;
+    font-size: 8px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 42px;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.7;
+    max-width: 480px;
+    margin-bottom: 48px;
+  }
+
+  .input-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 4px;
+  }
+
+  textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14.5px;
+    line-height: 1.6;
+    padding: 18px 20px;
+    resize: vertical;
+    min-height: 90px;
+  }
+
+  textarea::placeholder { color: var(--text-faint); }
+  textarea:focus { outline: none; }
+
+  .input-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px 12px;
+    border-top: 1px solid var(--border-soft);
+  }
+
+  .hint { font-size: 11px; color: var(--text-faint); letter-spacing: 0.02em; }
+
+  button {
+    background: var(--accent);
+    color: #14161a;
+    border: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+
+  button:hover { opacity: 0.88; transform: translateY(-1px); }
+  button:active { transform: translateY(0); }
+  button:disabled { opacity: 0.4; cursor: default; transform: none; }
+
+  #resultBox { margin-top: 32px; }
+
+  .placeholder-state {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-faint);
+    font-size: 13px;
+    padding: 20px 4px;
+  }
+
+  .placeholder-state .dash { width: 20px; height: 1px; background: var(--border); }
+
+  .processing {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    padding: 20px 4px;
+  }
+
+  .spinner {
+    width: 12px; height: 12px;
+    border: 1.5px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    animation: rise 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-header {
+    padding: 22px 24px 20px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+
+  .tag {
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  .tag.category { color: var(--accent); border-color: rgba(217,201,168,0.25); }
+
+  .tag.urgency-low { color: var(--urgency-low); border-color: rgba(111,191,139,0.3); }
+  .tag.urgency-medium { color: var(--urgency-medium); border-color: rgba(217,179,90,0.3); }
+  .tag.urgency-high { color: var(--urgency-high); border-color: rgba(224,146,90,0.3); }
+  .tag.urgency-critical { color: var(--urgency-critical); border-color: rgba(217,99,90,0.3); background: rgba(217,99,90,0.08); }
+
+  .sentiment-row {
+    font-size: 12px;
+    color: var(--text-faint);
+    margin-top: 10px;
+  }
+
+  .sentiment-row span { color: var(--text-secondary); }
+
+  .verdict-strip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+  }
+
+  .verdict-strip.resolved { background: var(--resolved-bg); color: var(--resolved); }
+  .verdict-strip.escalated { background: var(--escalated-bg); color: var(--escalated); }
+
+  .verdict-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .verdict-strip strong { font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; font-size: 11px; }
+
+  .card-body { padding: 24px; }
+
+  .body-label {
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 10px;
+  }
+
+  .body-text {
+    font-family: 'Fraunces', serif;
+    font-size: 16.5px;
+    line-height: 1.65;
+    color: var(--text-primary);
+    font-weight: 400;
+  }
+
+  .meta-footer {
+    display: flex;
+    gap: 24px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--border-soft);
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+
+  .meta-footer .val { color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Ticket Triage Agent — Live Pipeline</div>
+  <h1>Describe the issue.</h1>
+  <p class="subtitle">Classified, checked against the knowledge base, and either answered directly or routed to the right team — in one pass.</p>
+
+  <div class="input-panel">
+    <textarea id="ticketInput" placeholder="e.g. I was charged twice this month and I'm furious, fix this now."></textarea>
+    <div class="input-footer">
+      <span class="hint">⌘ + Enter to submit</span>
+      <button id="submitBtn">Run triage</button>
+    </div>
+  </div>
+
+  <div id="resultBox">
+    <div class="placeholder-state"><div class="dash"></div>Awaiting a ticket</div>
+  </div>
+
+</div>  
+
+<script>
+  const API_URL = "/ticket";
+
+  const input = document.getElementById("ticketInput");
+  const btn = document.getElementById("submitBtn");
+  const resultBox = document.getElementById("resultBox");
+
+  btn.addEventListener("click", submitTicket);
+  input.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") submitTicket();
+  });
+
+  async function submitTicket() {
+    const ticketText = input.value.trim();
+    if (!ticketText) return;
+
+    btn.disabled = true;
+    resultBox.innerHTML = `<div class="processing"><div class="spinner"></div>Classifying, searching knowledge base, resolving…</div>`;
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ticket_text: ticketText })
+      });
+      const result = await response.json();
+      renderResult(result);
+    } catch (err) {
+      resultBox.innerHTML = `<div class="processing" style="color:var(--escalated)">Could not reach the agent. Is the API running?</div>`;
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function renderResult(r) {
+    const isResolved = r.resolution_type === "auto_resolved";
+    const verdictClass = isResolved ? "resolved" : "escalated";
+    const verdictText = isResolved ? "Auto-resolved" : `Escalated · ${r.assigned_team}`;
+    const bodyLabel = isResolved ? "Response sent to customer" : "Internal note for support team";
+
+    resultBox.innerHTML = `
+      <div class="card">
+        <div class="card-header">
+          <div class="tag-row">
+            <span class="tag category">${r.category}</span>
+            <span class="tag urgency-${r.urgency}">${r.urgency} urgency</span>
+          </div>
+          <div class="sentiment-row">Customer sentiment — <span>${r.sentiment}</span></div>
+        </div>
+
+        <div class="verdict-strip ${verdictClass}">
+          <div class="verdict-dot"></div>
+          <strong>${verdictText}</strong>
+        </div>
+
+        <div class="card-body">
+          <div class="body-label">${bodyLabel}</div>
+          <div class="body-text">${r.response_text}</div>
+        </div>
+
+        <div class="meta-footer">
+          <div>Pipeline <span class="val">classify → retrieve → resolve</span></div>
+          <div>Source <span class="val">knowledge_base.txt</span></div>
+        </div>
+      </div>
+    `;
+  }
+</script>
+</body>
+</html>

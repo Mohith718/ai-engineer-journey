@@ -1,0 +1,105 @@
+Q: How do I reset a forgotten password?
+A: Click the "Forgot Password" link on the login page and enter your registered email. We will send you a secure reset link valid for 30 minutes. Check your spam folder if it does not arrive within two minutes.
+
+Q: I lost my phone and cannot access my 2FA backup codes. How do I get into my account?
+A: Contact security@taskflow.io from your registered email address with your account ID and latest invoice number. Our team will verify your identity through a secondary video call before manually disabling 2FA. This security process takes up to 24 hours.
+
+Q: How do I permanently delete my account and all associated data?
+A: Go to Workspace Settings > Billing & Workspace > Delete Account. This action is immediate and completely wipes all projects, tasks, and uploaded files from our active servers. This data cannot be recovered once confirmed.
+
+Q: Can I transfer my workspace ownership to a different email address?
+A: Yes, the current workspace owner must go to Team Settings, invite the new email as an Admin, and then click "Transfer Ownership." The new owner must accept the invitation via email to finalize the transfer.
+
+Q: I logged into a public computer and forgot to log out. How do I force close all active sessions?
+A: Navigate to Security Settings and click the "Log Out of All Devices" button. This instantly revokes access tokens across all browsers, mobile apps, and desktop applications. You will need to log back in on your primary devices.
+
+Q: My subscription payment failed, and my account is locked. How do I fix this?
+A: Update your payment method under Billing Settings to retry the charge immediately. We give a 3-day grace period before locking features, but your data remains safe. If the payment still fails, contact your bank to clear international charges.
+
+Q: What is your refund policy if I forget to cancel my annual subscription?
+A: We offer full refunds within 7 days of the automated annual renewal, provided no major automated actions were run during that time. Monthly subscriptions are non-refundable. Email billing@taskflow.io to request a renewal refund.
+
+Q: Why was I charged an unexpected overage fee this month?
+A: Overage fees occur when your workspace exceeds its monthly automation run limit or storage capacity. You can view your real-time usage metrics in the Billing Dashboard. We send email warnings at 80% and 100% consumption before charging.
+
+Q: What happens to my data if I downgrade from the Enterprise plan to the Free plan?
+A: Your extra data and advanced automations will become locked and read-only, but nothing will be deleted immediately. You will have 30 days to export your excess data before it is permanently removed to fit the Free tier limits.
+
+Q: Can I add a custom tax ID or corporate address to my past invoices?
+A: Yes, go to Billing Settings, update your Company Details, and click "Regenerate Past Invoices." The updated PDFs will be available for download instantly.
+
+Q: An intern accidentally deleted our main company project board. Can you recover it?
+A: Yes, deleted project boards go into the Workspace Trash bin for 30 days, where admins can restore them with one click. If the trash bin was also emptied, contact support within 7 days to request a point-in-time backup restoration.
+
+Q: My project data looks completely scrambled after a bulk CSV import. Can I undo this?
+A: There is no manual "undo" button for bulk imports. Open a critical support ticket immediately so our engineers can roll back your specific workspace database to the timestamp just before your import.
+
+Q: Our internal scripts are throwing 429 Too Many Requests errors. How do we raise our API limits?
+A: Our standard API limit is 600 requests per minute per workspace. If you hit this wall, optimize your script to use webhooks or implement exponential backoff. For higher limits, you must upgrade to the Enterprise API add-on.
+
+Q: Why did our active webhooks suddenly stop sending data to our server?
+A: If our system encounters five consecutive failed attempts (5xx errors or timeouts) to your endpoint, the webhook is automatically disabled for security. Check your server logs, fix the endpoint, and manually re-enable the webhook in the Developer Console.
+
+Q: The Slack integration stopped sending notifications. How do we fix it?
+A: This usually happens when the authorizing user leaves your company or loses admin rights. Go to Settings > Integrations, disconnect the Slack app, and have a current admin re-authorize the connection.
+
+Q: A guest user can see confidential projects they shouldn't have access to. What is wrong?
+A: Check if the guest was added to a Parent Team that inherits access rights to those projects. Remove them from the team and assign them explicitly to individual projects instead.
+
+Q: We accidentally generated a public sharing link for a highly confidential project. Who saw it?
+A: Go to the project's sharing menu and toggle "Public Access" to OFF immediately to revoke the link. Then, request an Access Log audit from security@taskflow.io to see every IP address that viewed the link while it was active.
+
+Q: A disgruntled employee is currently deleting files in our workspace. How do we stop them instantly?
+A: Log in as a Workspace Owner, go to Team Management, and click "Suspend Account" next to their name. This instantly cuts their active connection and revokes all active API keys tied to their profile.
+
+Q: How will I be notified if TaskFlow experiences a data breach?
+A: In the event of a confirmed security breach, we notify all affected account administrators via email within 24 hours of discovery. We will also post real-time updates on our public Status Page detailing the scope and remediation steps.
+
+Q: How do we fulfill a customer's GDPR "Right to be Forgotten" request for data stored in TaskFlow?
+A: Delete the relevant tasks and comments, then empty your Workspace Trash. Finally, submit a "Hard Delete Request" to privacy@taskflow.io with the specific item IDs, and our team will purge them from our cold storage backups within 14 days.
+
+Q: Can I work on my projects while offline during a flight?
+A: Yes, our mobile and desktop apps store changes locally while you are offline. The next time your device connects to the internet, these changes will automatically sync back to our servers.
+
+Q: Two team members edited the same task description at the exact same time offline. Which edit wins?
+A: When both devices reconnect, our system uses a "last write wins" protocol based on the device's hardware timestamp. The overridden text is saved in the task's Version History so you can manually recover it if needed.
+
+Q: Your servers went down for 4 hours during our major product launch. Do we get compensated?
+A: Our Service Level Agreement guarantees 99.9% monthly uptime. Since this outage breached that agreement, Enterprise customers are eligible for a 10% bill credit on their next invoice. Contact your account manager to claim it.
+
+Q: One of our users clicked a phishing link and their account is compromised. What should we do?
+A: Suspend the user's account immediately from your admin panel. Then, contact our security response team to terminate any sessions, reset their credentials, and inspect the workspace audit logs for unauthorized exports.
+
+Q: Is TaskFlow compliant with HIPAA regulations for storing medical data?
+A: TaskFlow is not HIPAA-compliant by default on standard plans. To store Protected Health Information (PHI), you must sign a Business Associate Agreement (BAA), which is exclusively available on our Enterprise Healthcare tier.
+
+Q: What happens if my workspace runs out of file attachment storage?
+A: Users will see an "Upload Failed" error when trying to attach new files, but existing files and text tasks will remain fully functional. You can free up space by clearing your trash or purchasing additional storage blocks.
+
+Q: Our full corporate workspace export keeps failing or timing out. How do we get our data?
+A: Workspace exports larger than 50GB can timeout on the web interface. Open a ticket with support, and our database administrators will generate a secure, segmented download link via Amazon S3 instead.
+
+Q: How does TaskFlow handle government or legal subpoenas for our corporate data?
+A: We do not disclose customer data to law enforcement unless legally compelled by a valid subpoena or court order. Unless prohibited by law, we will always notify your legal team before handing over any information.
+
+Q: The desktop app crashes instantly every time I try to open a specific board. What causes this?
+A: This usually happens due to a corrupted local cache file or a massive image attachment rendering error. Try clearing your application cache through the app's Help menu, or log in via a web browser to delete the problematic attachment.
+
+Q: Our automated script malfunctioned and wiped out thousands of active tasks via the API. Can you fix this?
+A: Do not panic or add new data. Open an emergency ticket immediately so our infrastructure team can isolate your workspace database partition and restore it to a snapshot taken right before the script execution.
+
+Q: An admin's laptop was stolen while they were logged in. How do we block access?
+A: A primary workspace owner must immediately go to the Team settings, locate the affected admin, and change their role to "Suspended." Then, use the Security panel to terminate all active sessions associated with that user ID.
+
+Q: Why am I being billed for 15 users when I only have 10 active team members?
+A: You are billed based on the number of purchased "Seats," not just active users. To stop paying for the 5 unused seats, go to Billing Settings and decrease your total seat count to 10 before your next billing cycle.
+
+Q: I just get a blank white screen when navigating to my workspace dashboard. How do I fix this?
+A: This is typically caused by outdated browser cookies or a conflicting ad-blocker extension blocking our core Javascript files. Try clearing your browser cache, disabling extensions for our domain, or using an Incognito window.
+
+Q: The platform is running slowly for our entire global team today. Is there an incident?
+A: Check status.taskflow.io to see if we are currently experiencing a global database degradation or DDoS attack. If our status page shows operational, your corporate network or VPN might be throttling traffic to our endpoints.
+
+Q: Our company changed its email domain, and now all our employees are locked out due to SSO constraints. How do we fix this?
+A: Contact emergency-sso@taskflow.io from a pre-verified backup email or phone number. Our authentication team will temporarily bypass your Single Sign-On requirement, allowing you to update your identity provider settings.
+
