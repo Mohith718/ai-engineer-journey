@@ -1,0 +1,51 @@
+from sklearn.linear_model import LogisticRegression
+from sklearn.cluster import KMeans
+# model = logistic_regression()
+# model.fit(X_train, y_train)
+# preditions = model.predict(X_test)
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_iris
+
+# Load the iris dataset
+iris = load_iris()
+print("Feature names:", iris.feature_names)
+print("Target names:", iris.target_names) 
+
+x=iris.data
+y=iris.target
+
+print("\nShape of X:", x.shape)  # (150, 4)
+print("Shape of y:", y.shape)  # (150,)
+
+print("\nFirst 5 rows of X (measurements):")
+print(x[:5])
+print("\nFirst 5 labels:", y[:5]) 
+
+X_train, X_test, y_train, y_test = train_test_split(
+    x, y, test_size=0.2, random_state=42
+)
+print("Training samples:", X_train.shape[0])  # 120
+print("Testing samples:", X_test.shape[0])
+model = LogisticRegression(max_iter=200)
+model.fit(X_train, y_train)
+print("Model trained!")
+predictions=model.predict(X_test)
+print(predictions)
+print(y_test)
+accuracy=accuracy_score(y_test,predictions)
+print("Accuracy:", f"{accuracy:.2f}")
+for i in range(10):
+    status = "✓" if predictions[i] == y_test[i] else "✗"
+    print(f"  Predicted: {predictions[i]}  |  Actual: {y_test[i]}  {status}")
+
+modelk = KMeans(n_clusters=3, random_state=42, n_init=10)
+modelk.fit(x)
+print("KMeans model trained!")
+clusters = modelk.labels_
+print("--- What's in each cluster? ---")
+for cluster_id in range(3):
+    species_in_cluster = y[clusters == cluster_id]
+    print(f"Cluster {cluster_id} contains species: {list(species_in_cluster)}")
+print("KMeans found:", clusters[:20])
+print("Actual species:", y[:20])
